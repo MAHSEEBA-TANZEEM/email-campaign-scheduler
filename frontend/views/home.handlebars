@@ -1,0 +1,158 @@
+<!-- views/home.handlebars -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Campaign Dashboard</title>
+  <style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+  }
+
+  form {
+    margin: 0 auto 30px auto;
+    padding: 20px;
+    border: 1px solid #6A0DAD;         /* deep violet border */
+    border-radius: 8px;
+    max-width: 500px;
+    background-color: #EEE6F9;         /* soft violet box */
+  }
+
+  label {
+    display: block;
+    margin-top: 10px;
+    color: #4B0082;
+    font-weight: bold;
+  }
+
+  input, textarea {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    box-sizing: border-box;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+
+  input:focus, textarea:focus {
+    border-color: #8A2BE2;
+    box-shadow: 0 0 5px rgba(138, 43, 226, 0.5);
+    outline: none;
+  }
+
+  button {
+    margin-top: 15px;
+    padding: 10px 20px;
+    background: linear-gradient(to right, #7B1FA2, #8A2BE2); /* violet gradient */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: box-shadow 0.3s;
+  }
+
+  button:hover {
+    box-shadow: 0 0 8px rgba(138, 43, 226, 0.6);
+  }
+
+ .campaign-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: flex-start;
+  max-width: 100%;
+  width: 100%;
+  padding: 0; /* Optional: reset default padding */
+  box-sizing: border-box; /* Helps with consistent sizing */
+}
+
+ .campaign {
+  flex: 0 1 calc(50% - 24px); /* Two cards per row with gap accounted for */
+  background-color: #fafafa;
+  padding: 16px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  box-sizing: border-box; /* Prevent overflow issues */
+ }
+
+ /* Responsive: Stack cards on small screens */
+ @media (max-width: 768px) {
+  .campaign {
+    flex: 0 1 100%;
+  }
+ }
+
+ h2 {
+    margin-top: 45px;
+    text-align: center;
+    color: #560bad;
+  }
+
+  h3 {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    color: rgb(184, 39, 29);
+  }
+
+  p, ul{
+    color: rgb(184, 39, 29);
+  }
+</style>
+
+</head>
+<body>
+  <h1 style="text-align: center; font-size: 32px; color: rgb(150, 34, 26);">📬 Email Campaign Scheduler</h1>
+  <p style="text-align: center;">Automate and schedule personalized email campaigns with real-time tracking and effortless delivery management.</p>
+  <h2>Create New Campaign</h2>
+  <form method="POST" action="/create-campaign">
+    <label>Title:</label>
+    <input type="text" name="title" required>
+
+    <label>Message:</label>
+    <textarea name="message" required></textarea>
+
+    <label>Recipients (comma-separated emails):</label>
+    <input type="text" name="recipients" required>
+
+    <label>Scheduled Time:</label>
+    <input type="datetime-local" name="scheduledTime" required>
+
+    <button type="submit">Create Campaign</button>
+  </form>
+
+  <h2 style="color: rgb(150, 34, 26);" >All Campaigns</h2>
+
+<div class="campaign-grid">
+  {{#if campaigns.length}}
+    {{#each campaigns}}
+      <div class="campaign">
+        <h3>{{this.title}} – {{this.status}}</h3>
+        <p><strong>Scheduled:</strong> {{this.scheduledTime}}</p>
+        <p><strong>Recipients:</strong></p>
+        <ul>
+          {{#if this.deliveryReport.length}}
+            {{#each this.deliveryReport}}
+              <li>{{this.email}} – {{this.status}}</li>
+            {{/each}}
+          {{else}}
+            <li>No recipients found</li>
+          {{/if}}
+        </ul>
+      </div>
+    {{/each}}
+  {{else}}
+    <p>No campaigns available.</p>
+  {{/if}}
+
+  {{#if error}}
+    <p style="color: red;">{{error}}</p>
+  {{/if}}
+</div>
+
+</body>
+</html>
